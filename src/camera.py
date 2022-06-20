@@ -6,9 +6,11 @@ from PIL import ImageGrab
 
     
 class Camera:
-    def __init__(self, bbox, config):
+    def __init__(self, bbox, config, fx, fy):
         self.bbox = bbox
         self.config = config
+        self.fx = fx
+        self.fy = fy
     
     def capture(self, path = None):
         if path is None:
@@ -27,7 +29,7 @@ class Camera:
         """
 
         image = np.array(image)
-        image = cv.resize(image, None, fx=2, fy=2)
+        image = cv.resize(image, None, fx=self.fx, fy=self.fy)
         gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
         # converting it to binary image
         threshold_img = cv.threshold(gray_image, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)[1]
@@ -45,7 +47,7 @@ class Camera:
         # now feeding image to tesseract
         # details = pytesseract.image_to_data(threshold_img, output_type=pytesseract.Output.DICT,
         #                                     config=config, lang='eng')
-        return details
+        pass
 
     def parse_text_string(self, threshold_img):
         """
